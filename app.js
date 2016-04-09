@@ -23,12 +23,12 @@ crawler.discoverResources = function(buffer, queue) {
 };
 
 crawler.on("fetchcomplete", function(queue, data, res) {
-    $ = cheerio.load(data);
+    var $ = cheerio.load(data);
     var fetchedAddress = queue.url;
-    var fetchedData = $().text();
-    console.log("%s", fetchedAddress);
+    var cleanedData = $('#mw-content-text').text()
+    console.log(fetchedAddress);
     console.log("\n");
-    console.log("%s", data);
+    console.log(cleanedData);
     console.log("-------------------------");
 
     //console.log("I just received %s (%d bytes)", queue.url, data.length);
