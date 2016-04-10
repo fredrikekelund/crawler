@@ -17,7 +17,7 @@ crawler.stripQuerystring = true;
 
 crawler.discoverResources = function(buffer, queue) {
   var $ = cheerio.load(buffer.toString("utf8"));
-  $('.div-col.columns.column-count.column-count-2').prev().nextAll().remove(); //this removes the reference section after the main article
+  //$('.div-col.columns.column-count.column-count-2').prev().nextAll().remove(); //this removes the reference section after the main article
   return $('a[href]').map(function() {
     var link = $(this).attr('href');
     if (!new RegExp(blacklist.join("|")).test(link)) { //this prevents the crawler from crawling irrelevant/useless pages
@@ -26,11 +26,11 @@ crawler.discoverResources = function(buffer, queue) {
   }).get()
 };
 
-crawler.on("fetchcomplete", function(queue, data, res) {
-    var fetchedAddress = queue.url;
-    var $ = cheerio.load(data);
-    $('.div-col.columns.column-count.column-count-2').nextAll().remove(); //removes reference section from article for ease of reading
-    var cleanedData = $('#mw-content-text').text() //assigning body of article to variable for testing/logging
+crawler.on("fetchcomplete", function(queueItem, responseBuffer, response) {
+    var fetchedAddress = queueItem.url;
+    //var $ = cheerio.load(responseBuffer.toString("utf8"));
+    //$('.div-col.columns.column-count.column-count-2').nextAll().remove(); //removes reference section from article for ease of reading
+    //var cleanedData = $('#mw-content-text').text() //assigning body of article to variable for testing/logging
     console.log(fetchedAddress); //logs the link of article that it is currently crawling
     //console.log(cleanedData);
 });
@@ -38,7 +38,7 @@ crawler.on("fetchcomplete", function(queue, data, res) {
 crawler.start(); //start crawler
 
 crawler.on("crawlstart", function() {
-  console.log("begin!"); //this shows up in console right before the first link
+  console.log("begin!");
 });
 
 crawler.on("complete", function() { //this event does not fire and the console hangs
