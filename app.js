@@ -5,7 +5,7 @@ var initialTopic = "SpaceX";
 var blacklist = ["#", "/w/", "/static/", "/api/", "/beacon/", "File:",
                  "Wikipedia:", "Template:", "MediaWiki:", "Help:", "Special:",
                  "Category:", "Portal:", "Main_Page", "Talk:", "User:",
-                 "User_talk:", "Template_talk:", "Module:"] //useless special cases from wikipedia
+                 "User_talk:", "Template_talk:", "Module:"]; //useless special cases from wikipedia
 
 var crawler = new Crawler("en.wikipedia.org", "/wiki/" + initialTopic, 80);
 
@@ -15,9 +15,9 @@ crawler.scanSubdomains = false;
 crawler.stripWWWDomain = true;
 crawler.stripQuerystring = true;
 
-crawler.discoverResources = function(buffer, queue) {
+crawler.discoverResources = function(buffer, queueItem) {
   var $ = cheerio.load(buffer.toString("utf8"));
-  //$('.div-col.columns.column-count.column-count-2').prev().nextAll().remove(); //this removes the reference section after the main article
+  $('.div-col.columns.column-count.column-count-2').prev().nextAll().remove(); //this removes the reference section after the main article
   return $('a[href]').map(function() {
     var link = $(this).attr('href');
     if (!new RegExp(blacklist.join("|")).test(link)) { //this prevents the crawler from crawling irrelevant/useless pages
@@ -44,3 +44,29 @@ crawler.on("crawlstart", function() {
 crawler.on("complete", function() { //this event does not fire and the console hangs
   console.log("end!");
 });
+
+
+
+/*var originalEmit = crawler.emit;
+   crawler.emit = function(evtName, queueItem) {
+       crawler.queue.complete(function(err, completeCount) {
+           if (err) {
+               throw err;
+           }
+
+           crawler.queue.getLength(function(err, length) {
+               if (err) {
+                   throw err;
+               }
+
+               console.log("fetched %d of %d — %d open requests, %d open listeners".green,
+                   completeCount,
+                   length,
+                   crawler._openRequests,
+                   crawler._openListeners);
+           });
+       });
+
+       console.log(evtName, queueItem ? queueItem.url ? queueItem.url : queueItem : null);
+       originalEmit.apply(crawler, arguments);
+   };*/
