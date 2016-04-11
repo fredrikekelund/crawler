@@ -18,12 +18,15 @@ crawler.stripQuerystring = true;
 crawler.discoverResources = function(buffer, queueItem) {
   var $ = cheerio.load(buffer.toString("utf8"));
   $('.div-col.columns.column-count.column-count-2').prev().nextAll().remove(); //this removes the reference section after the main article
-  return $('a[href]').map(function() {
+  
+  var resources = $('a[href]').map(function() {
     var link = $(this).attr('href');
     if (!new RegExp(blacklist.join("|")).test(link)) { //this prevents the crawler from crawling irrelevant/useless pages
       return link;
     }
-  }).get()
+  }).get();
+  
+  return crawler.cleanExpandResources(resources, queueItem);
 };
 
 crawler.on("fetchcomplete", function(queueItem, responseBuffer, response) {
