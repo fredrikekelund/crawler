@@ -31,7 +31,7 @@ crawler.on("fetchcomplete", function(queueItem, responseBuffer, response) {
     //var $ = cheerio.load(responseBuffer.toString("utf8"));
     //$('.div-col.columns.column-count.column-count-2').nextAll().remove(); //removes reference section from article for ease of reading
     //var cleanedData = $('#mw-content-text').text() //assigning body of article to variable for testing/logging
-    console.log(fetchedAddress); //logs the link of article that it is currently crawling
+    //console.log(fetchedAddress); //logs the link of article that it is currently crawling
     //console.log(cleanedData);
 });
 
@@ -47,26 +47,26 @@ crawler.on("complete", function() { //this event does not fire and the console h
 
 
 
-/*var originalEmit = crawler.emit;
-   crawler.emit = function(evtName, queueItem) {
-       crawler.queue.complete(function(err, completeCount) {
+var originalEmit = crawler.emit;
+crawler.emit = function(evtName, queueItem) {
+   crawler.queue.complete(function(err, completeCount) {
+       if (err) {
+           throw err;
+       }
+
+       crawler.queue.getLength(function(err, length) {
            if (err) {
                throw err;
            }
 
-           crawler.queue.getLength(function(err, length) {
-               if (err) {
-                   throw err;
-               }
-
-               console.log("fetched %d of %d — %d open requests, %d open listeners".green,
-                   completeCount,
-                   length,
-                   crawler._openRequests,
-                   crawler._openListeners);
-           });
+           console.log("fetched %d of %d — %d open requests, %d open listeners",
+               completeCount,
+               length,
+               crawler._openRequests,
+               crawler._openListeners);
        });
+   });
 
-       console.log(evtName, queueItem ? queueItem.url ? queueItem.url : queueItem : null);
-       originalEmit.apply(crawler, arguments);
-   };*/
+   console.log(evtName, queueItem ? queueItem.url ? queueItem.url : queueItem : null);
+   originalEmit.apply(crawler, arguments);
+};
