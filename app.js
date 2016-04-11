@@ -18,14 +18,14 @@ crawler.stripQuerystring = true;
 crawler.discoverResources = function(buffer, queueItem) {
   var $ = cheerio.load(buffer.toString("utf8"));
   $('.div-col.columns.column-count.column-count-2').prev().nextAll().remove(); //this removes the reference section after the main article
-  
+
   var resources = $('a[href]').map(function() {
     var link = $(this).attr('href');
     if (!new RegExp(blacklist.join("|")).test(link)) { //this prevents the crawler from crawling irrelevant/useless pages
       return link;
     }
   }).get();
-  
+
   return crawler.cleanExpandResources(resources, queueItem);
 };
 
@@ -34,7 +34,7 @@ crawler.on("fetchcomplete", function(queueItem, responseBuffer, response) {
     //var $ = cheerio.load(responseBuffer.toString("utf8"));
     //$('.div-col.columns.column-count.column-count-2').nextAll().remove(); //removes reference section from article for ease of reading
     //var cleanedData = $('#mw-content-text').text() //assigning body of article to variable for testing/logging
-    //console.log(fetchedAddress); //logs the link of article that it is currently crawling
+    console.log(fetchedAddress); //logs the link of article that it is currently crawling
     //console.log(cleanedData);
 });
 
@@ -50,7 +50,7 @@ crawler.on("complete", function() { //this event does not fire and the console h
 
 
 
-var originalEmit = crawler.emit;
+/*var originalEmit = crawler.emit;
 crawler.emit = function(evtName, queueItem) {
    crawler.queue.complete(function(err, completeCount) {
        if (err) {
@@ -72,4 +72,4 @@ crawler.emit = function(evtName, queueItem) {
 
    console.log(evtName, queueItem ? queueItem.url ? queueItem.url : queueItem : null);
    originalEmit.apply(crawler, arguments);
-};
+};*/
