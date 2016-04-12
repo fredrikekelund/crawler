@@ -2,12 +2,13 @@ var cheerio = require('cheerio');
 var Crawler = require("simplecrawler");
 
 var initialTopic = "SpaceX";
-var blacklist = ["#", "/w/", "/static/", "/api/", "/beacon/", "File:",
+/*var blacklist = ["#", "/w/", "/static/", "/api/", "/beacon/", "File:",
                  "Wikipedia:", "Template:", "MediaWiki:", "Help:", "Special:",
                  "Category:", "Portal:", "Main_Page", "Talk:", "User:",
-                 "User_talk:", "Template_talk:", "Module:"]; //useless special cases from wikipedia
+                 "User_talk:", "Template_talk:", "Module:"]; //useless special cases from wikipedia*/
 
-var crawler = new Crawler("en.wikipedia.org", "/wiki/" + initialTopic, 80);
+var url = "/wiki/" + initialTopic;
+var crawler = new Crawler("en.wikipedia.org", url, 80);
 
 crawler.initialProtocol = "https";
 crawler.maxDepth = 2; //reads only main article and links off of that
@@ -15,7 +16,7 @@ crawler.scanSubdomains = false;
 crawler.stripWWWDomain = true;
 crawler.stripQuerystring = true;
 
-crawler.discoverResources = function(buffer, queueItem) {
+/*crawler.discoverResources = function(buffer, queueItem) {
   var $ = cheerio.load(buffer.toString("utf8"));
   $('.div-col.columns.column-count.column-count-2').prev().nextAll().remove(); //this removes the reference section after the main article
 
@@ -27,7 +28,7 @@ crawler.discoverResources = function(buffer, queueItem) {
   }).get();
 
   return crawler.cleanExpandResources(resources, queueItem);
-};
+};*/
 
 crawler.on("fetchcomplete", function(queueItem, responseBuffer, response) {
     var fetchedAddress = queueItem.url;
@@ -38,8 +39,6 @@ crawler.on("fetchcomplete", function(queueItem, responseBuffer, response) {
     //console.log(cleanedData);
 });
 
-crawler.start(); //start crawler
-
 crawler.on("crawlstart", function() {
   console.log("begin!");
 });
@@ -48,7 +47,7 @@ crawler.on("complete", function() { //this event does not fire and the console h
   console.log("end!");
 });
 
-
+crawler.start(); //start crawler
 
 /*var originalEmit = crawler.emit;
 crawler.emit = function(evtName, queueItem) {
