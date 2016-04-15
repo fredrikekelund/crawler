@@ -16,6 +16,10 @@ crawler.scanSubdomains = false;
 crawler.stripWWWDomain = true;
 crawler.stripQuerystring = true;
 
+crawler.addFetchCondition(function(parsedURL, queueItem) {
+	return parsedURL.depth <= crawler.maxDepth;
+});
+
 /*crawler.discoverResources = function(buffer, queueItem) {
   var $ = cheerio.load(buffer.toString("utf8"));
   $('.div-col.columns.column-count.column-count-2').prev().nextAll().remove(); //this removes the reference section after the main article
